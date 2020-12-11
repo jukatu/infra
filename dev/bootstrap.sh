@@ -3,15 +3,18 @@
 GITHUB_USER=$1
 GITHUB_TOKEN=$2
 CLUSTER=dev
+BASE_DIR=$(realpath $(dirname $0))
 
-# kind create cluster --name $CLUSTER --config cluster.yaml
+echo "BASE_DIR=$BASE_DIR"
 
-# kubectl cluster-info --context kind-$CLUSTER
+kind create cluster --name $CLUSTER --config $BASE_DIR/cluster.yaml
 
-# flux bootstrap github \
-#   --owner=$GITHUB_USER \
-#   --repository=infra \
-#   --branch=main \
-#   --path=dev-cluster \
-#   --context kind-$CLUSTER \
-#   --personal
+kubectl cluster-info --context kind-$CLUSTER
+
+flux bootstrap github \
+  --owner=$GITHUB_USER \
+  --repository=infra \
+  --branch=main \
+  --path=dev-cluster \
+  --context kind-$CLUSTER \
+  --personal
