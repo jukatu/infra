@@ -18,3 +18,17 @@ flux bootstrap github \
   --path=dev-cluster \
   --context kind-$CLUSTER \
   --personal
+
+flux create source git ingress-nginx \
+  --url=https://github.com/jukatu/ingress-nginx.git \
+  --branch=master \
+  --interval=30s \
+  --export > ./$CLUSTER-cluster/ingress-nginx-source.yaml
+
+flux create kustomization ingress-nginx \
+  --source=ingress-nginx \
+  --path="./" \
+  --prune=true \
+  --validation=client \
+  --interval=1h \
+  --export > ./$CLUSTER-cluster/ingress-nginx.yaml
